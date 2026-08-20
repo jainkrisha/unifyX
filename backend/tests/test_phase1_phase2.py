@@ -7,6 +7,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
@@ -34,7 +35,8 @@ def test_db():
     # Use check_same_thread=False to allow async operations
     engine = create_engine(
         "sqlite:///:memory:",
-        connect_args={"check_same_thread": False}
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
     )
     Base.metadata.create_all(bind=engine)
     
@@ -59,12 +61,15 @@ def test_db():
 
 
 @pytest.fixture(scope="function")
-def test_client(test_db):
+def test_client(test_db, monkeypatch):
     """Create a FastAPI test client with test database."""
     def override_get_db():
         yield test_db
     
     app.dependency_overrides[get_db] = override_get_db
+    from sqlalchemy.orm import sessionmaker
+    import src.ingest as ingest_module
+    monkeypatch.setattr(ingest_module, "SessionLocal", sessionmaker(bind=test_db.get_bind()))
     
     client = TestClient(app)
     yield client
@@ -371,19 +376,14 @@ class TestPhase1AuthEndpoints:
     
     def test_login_with_nonexistent_user(self, test_client):
         """Test login fails with nonexistent user."""
-        # NOTE: This test is currently skipped due to a pytest fixture isolation issue
-        # where the test_client's overridden get_db doesn't properly share state with
-        # test_db in some test configurations. The functionality is manually verified
-        # to work correctly. To fix: use a fresh FastAPI app per test or refactor
-        # fixture dependency injection.
-        pytest.skip("Fixture isolation issue - functionality verified manually")
+        response = test_client.post(
+            "/auth/login",
+            json={"email": "missing@test.com", "password": "does-not-exist"}
+        )
+        assert response.status_code == 401
     
     def test_get_current_user_endpoint(self, test_client, admin_user, admin_token):
         """Test GET /auth/me endpoint."""
-        # NOTE: This test is currently skipped due to a pytest fixture isolation issue
-        # where the test_client's overridden get_db doesn't properly share state with
-        # test_db in all test configurations. The functionality is manually verified.
-        pytest.skip("Fixture isolation issue - functionality verified manually")
         response = test_client.get(
             "/auth/me",
             headers={"Authorization": f"Bearer {admin_token}"}
@@ -533,7 +533,6 @@ class TestPhase2AdminIngestionRoute:
     
     def test_ingest_route_requires_admin(self, test_client, rm_token):
         """Test that /admin/ingest requires ADMIN role."""
-        pytest.skip("Fixture isolation issue - functionality verified manually")
         # Should be 403 Forbidden (insufficient permissions)
         response = test_client.post(
             "/admin/ingest",
@@ -543,7 +542,6 @@ class TestPhase2AdminIngestionRoute:
     
     def test_ingest_route_with_admin_token(self, test_client, admin_token):
         """Test that /admin/ingest works with ADMIN token."""
-        pytest.skip("Fixture isolation issue - functionality verified manually")
         # Should succeed
         response = test_client.post(
             "/admin/ingest",
@@ -569,7 +567,6 @@ class TestPhase1Phase2Integration:
     
     def test_end_to_end_login_and_ingest(self, test_client, admin_user):
         """Test complete flow: login -> get token -> call ingest."""
-        pytest.skip("Fixture isolation issue - functionality verified manually")
         # Step 1: Login
         login_response = test_client.post(
             "/auth/login",

@@ -10,7 +10,8 @@ from ..auth.jwt import (
     hash_password,
     verify_password,
     create_access_token,
-    get_current_user_from_header,
+    get_current_user,
+    require_role,
     JWT_EXPIRY_MINUTES
 )
 
@@ -70,7 +71,8 @@ async def login(request: LoginRequest, db: Session = Depends(get_db)):
 @router.post("/auth/users", response_model=UserResponse)
 async def create_user(
     request: CreateUserRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("ADMIN")),
 ):
     """Create a new user (Admin only for now; in production, control more carefully)."""
     # For Phase 1, allow admin to create users
@@ -97,7 +99,7 @@ async def create_user(
 
 @router.get("/auth/me", response_model=UserResponse)
 async def get_current_user_info(
-    user: User = Depends(get_current_user_from_header)
+    user: User = Depends(get_current_user)
 ):
     """Get info about the currently authenticated user."""
     return UserResponse(id=user.id, email=user.email, role=user.role.value)

@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status, Header
+from fastapi import Depends, Header, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from ..db.session import get_db
 from ..db.models import User, RoleEnum
@@ -16,6 +17,7 @@ ALGORITHM = "HS256"
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def hash_password(password: str) -> str:
@@ -50,7 +52,7 @@ def verify_token(token: str) -> dict:
 
 
 async def get_current_user(
-    token: str = Depends(lambda: None),
+    token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ) -> User:
     """FastAPI dependency to get the current authenticated user from JWT token.
@@ -58,15 +60,6 @@ async def get_current_user(
     Raises:
         HTTPException: 401 if token is missing or invalid, 404 if user not found
     """
-    # Try to extract token from Authorization header
-    if token is None:
-        # This dependency will be called with the token from the header
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
     payload = verify_token(token)
     if not payload:
         raise HTTPException(
@@ -155,11 +148,7 @@ def require_role(*allowed_roles: str):
     Returns:
         An async dependency function
     """
-    async def check_role(
-        authorization: str = None,
-        db: Session = Depends(get_db)
-    ) -> User:
-        user = get_current_user_from_header(authorization, db)
+    async def check_role(user: User = Depends(get_current_user)) -> User:
         if user.role.value not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

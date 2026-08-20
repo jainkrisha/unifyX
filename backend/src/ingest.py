@@ -38,13 +38,26 @@ def map_row_to_source(record: dict, source_system: str) -> Tuple[dict, list]:
     mobile = record.get("mobile")
     email = record.get("email")
     city = record.get("city")
-    dob = _parse_date(record.get("dob"))
+    dob_raw = record.get("dob")
+    dob = _parse_date(dob_raw)
+    if dob_raw is not None and str(dob_raw).strip() and dob is None:
+        errors.append(f"invalid dob: {dob_raw}")
     source_customer_id = record.get("source_customer_id")
 
     # Collect product_holdings depending on file columns
     product = {}
-    # Known fields: holdings,portfolio_value,loan_amount,outstanding,emi,aum
-    for k in ["holdings", "portfolio_value", "loan_amount", "outstanding", "emi", "aum"]:
+    # Product-specific financial fields from the five supported source files.
+    for k in [
+        "holdings",
+        "portfolio_value",
+        "loan_amount",
+        "outstanding",
+        "emi",
+        "aum",
+        "sum_assured",
+        "premium",
+        "total_aum",
+    ]:
         if k in record and record.get(k) not in (None, ""):
             v = _to_float(record.get(k))
             if v is None:
@@ -53,8 +66,16 @@ def map_row_to_source(record: dict, source_system: str) -> Tuple[dict, list]:
                 product[k] = v
 
     balance = None
-    # prefer portfolio_value, outstanding, aum, loan_amount
-    for key in ("portfolio_value", "outstanding", "aum", "loan_amount"):
+    # Prefer the source's primary value when calculating relationship value.
+    for key in (
+        "portfolio_value",
+        "outstanding",
+        "aum",
+        "total_aum",
+        "sum_assured",
+        "loan_amount",
+        "premium",
+    ):
         if key in product:
             balance = product[key]
             break

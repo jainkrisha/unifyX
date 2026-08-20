@@ -24,3 +24,18 @@ def admin_ingest(
 
     summary = ingest_all(actor_id=current_user.id)
     return {"status": "ok", "summary": summary}
+
+
+@router.post("/admin/run-pipeline")
+def admin_run_pipeline(
+    current_user: User = Depends(require_role("ADMIN")),
+    db: Session = Depends(get_db)
+) -> Dict:
+    """Run the Phase 3 matching and Phase 4 golden-customer pipeline.
+
+    Requires: ADMIN role
+    """
+    from ..pipeline.match import run_match_pipeline
+
+    summary = run_match_pipeline(db)
+    return {"status": "ok", "summary": summary}
