@@ -1,5 +1,7 @@
 """Authentication endpoints."""
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from datetime import timedelta
@@ -16,6 +18,7 @@ from ..auth.jwt import (
 )
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 class LoginRequest(BaseModel):
@@ -47,10 +50,11 @@ class UserResponse(BaseModel):
 
 
 @router.post("/auth/login", response_model=LoginResponse)
-async def login(request: LoginRequest, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+async def login(request: Request, login_request: LoginRequest, db: Session = Depends(get_db)):
     """Login with email and password, return JWT token."""
-    user = db.query(User).filter(User.email == request.email).first()
-    if not user or not verify_password(request.password, user.password_hash):
+    user = db.query(User).filter(User.email == login_request.email).first()
+    if not user or not verify_password(login_request.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",

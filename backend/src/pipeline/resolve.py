@@ -64,7 +64,14 @@ def _add_review_item(
     field: str,
     values: List[Any],
 ) -> None:
-    record = next(iter(records))
+    record_list = list(records)
+    record = record_list[0]
+    candidate_values = [
+        {"source_system": str(source_record.source_system), "value": _serialized(value)}
+        for source_record in record_list
+        for value in [_field_value(source_record, field)]
+        if value is not None
+    ]
     reason = (
         f"{field} conflict requires review: "
         f"{[_serialized(value) for value in values]}"
@@ -80,12 +87,20 @@ def _add_review_item(
     )
     if existing:
         existing.reason = reason
+        existing.context = {
+            "field_name": field,
+            "candidate_values": candidate_values,
+        }
         return
     db.add(
         ReviewQueueItem(
             golden_customer_id=golden_customer_id,
             candidate_source_record_id=record.id,
             reason=reason,
+            context={
+                "field_name": field,
+                "candidate_values": candidate_values,
+            },
             status=ReviewStatusEnum.PENDING,
         )
     )

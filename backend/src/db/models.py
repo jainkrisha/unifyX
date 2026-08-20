@@ -134,7 +134,9 @@ class ReviewQueueItem(Base):
     id = Column(Integer, primary_key=True)
     golden_customer_id = Column(Integer, ForeignKey("golden_customers.id"), nullable=True)
     candidate_source_record_id = Column(Integer, ForeignKey("source_records.id"), nullable=False)
+    candidate_source_record_id_2 = Column(Integer, ForeignKey("source_records.id"), nullable=True)
     reason = Column(String(512))
+    context = Column(JSON_TYPE, nullable=True)
     status = Column(Enum(ReviewStatusEnum), default=ReviewStatusEnum.PENDING, nullable=False)
     resolved_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     resolved_at = Column(DateTime, nullable=True)
@@ -142,6 +144,7 @@ class ReviewQueueItem(Base):
 
     golden_customer = relationship("GoldenCustomer", foreign_keys=[golden_customer_id])
     candidate_source_record = relationship("SourceRecord", foreign_keys=[candidate_source_record_id])
+    candidate_source_record_2 = relationship("SourceRecord", foreign_keys=[candidate_source_record_id_2])
     resolved_by_user = relationship("User", foreign_keys=[resolved_by])
 
 

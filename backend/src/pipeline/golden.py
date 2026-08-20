@@ -14,9 +14,14 @@ def _as_float(value: Any) -> float:
         return 0.0
 
 
-def _pick_rm(db: Session) -> Optional[int]:
-    rm = db.query(User).filter(User.role == RoleEnum.RM).order_by(User.id.asc()).first()
-    return rm.id if rm else None
+def _rm_cycle(db: Session):
+    rms = db.query(User).filter(User.role == RoleEnum.RM).order_by(User.id.asc()).all()
+    if not rms:
+        return
+    index = 0
+    while True:
+        yield rms[index % len(rms)].id
+        index += 1
 
 
 def _groups(db: Session) -> Dict[int, List[CustomerLink]]:
@@ -58,7 +63,7 @@ def _write_unique_audit(
 def materialize_golden_customers(db: Session) -> Dict[str, int]:
     """Apply resolved provenance and balances to the provisional golden rows."""
     summary = {"golden_customers": 0, "audit_entries": 0}
-    default_rm_id = _pick_rm(db)
+    rm_ids = _rm_cycle(db)
 
     for golden_id, links in _groups(db).items():
         golden = db.get(GoldenCustomer, golden_id)
@@ -116,7 +121,7 @@ def materialize_golden_customers(db: Session) -> Dict[str, int]:
             if link.source_record is not None
         )
         if golden.rm_id is None:
-            golden.rm_id = default_rm_id
+            golden.rm_id = next(rm_ids, None)
 
         after = {
             "primary_name": golden.primary_name,

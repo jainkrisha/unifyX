@@ -269,12 +269,12 @@ def run_match_pipeline(db: Session) -> Dict[str, Any]:
                 processed_ids.add(right.id)
                 summary["probabilistic_links"] += 2
             elif thresholds["manual_min"] <= confidence < thresholds["manual_max"]:
-                record = left if left.id < right.id else right
                 existing_review = (
                     db.query(ReviewQueueItem)
                     .filter(
                         ReviewQueueItem.golden_customer_id.is_(None),
-                        ReviewQueueItem.candidate_source_record_id == record.id,
+                        ReviewQueueItem.candidate_source_record_id.in_([left.id, right.id]),
+                        ReviewQueueItem.candidate_source_record_id_2.in_([left.id, right.id]),
                         ReviewQueueItem.status == ReviewStatusEnum.PENDING,
                     )
                     .first()
@@ -283,8 +283,13 @@ def run_match_pipeline(db: Session) -> Dict[str, Any]:
                     db.add(
                         ReviewQueueItem(
                             golden_customer_id=None,
-                            candidate_source_record_id=record.id,
+                            candidate_source_record_id=left.id,
+                            candidate_source_record_id_2=right.id,
                             reason="confidence in manual-review range, needs human decision",
+                            context={
+                                "confidence": round(confidence, 4),
+                                "features": features,
+                            },
                             status=ReviewStatusEnum.PENDING,
                         )
                     )
