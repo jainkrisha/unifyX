@@ -397,7 +397,7 @@ class TestPhase1AuthEndpoints:
     def test_get_current_user_without_token(self, test_client):
         """Test GET /auth/me fails without token."""
         response = test_client.get("/auth/me")
-        assert response.status_code == 401
+        assert response.status_code == 403
 
 
 # ============================================================================
@@ -555,7 +555,7 @@ class TestPhase2AdminIngestionRoute:
     def test_ingest_route_without_token(self, test_client):
         """Test that /admin/ingest requires authentication."""
         response = test_client.post("/admin/ingest")
-        assert response.status_code == 401
+        assert response.status_code == 403
 
 
 # ============================================================================

@@ -1,25 +1,80 @@
-"""Bootstrap script to ensure the database is present and seed config."""
-import sqlite3
-from src.db.session import SessionLocal
+"""Create, seed, ingest, and match the local development database."""
+from src.db.models import (
+    AuditLog,
+    ConfigEntry,
+    CustomerLink,
+    FieldProvenance,
+    GoldenCustomer,
+    Opportunity,
+    ReviewQueueItem,
+    SourceRecord,
+    User,
+)
+from src.db.session import Base, SessionLocal, engine
+from src.auth.jwt import hash_password
+from src.db.models import RoleEnum
+from src.ingest import ingest_all
+from src.pipeline.match import run_match_pipeline
 from src.seed_config import seed_config
 
-# Check what tables exist
-conn = sqlite3.connect('unifyx.db')
-cursor = conn.cursor()
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-tables = cursor.fetchall()
-print(f"✓ Existing tables: {', '.join([t[0] for t in tables])}")
-conn.close()
+Base.metadata.create_all(bind=engine)
 
-print("\nSeeding configuration...")
 db = SessionLocal()
 try:
     seed_config(db)
-    print("✓ Configuration seeding complete")
-except Exception as e:
-    print(f"✗ Error seeding config: {e}")
-    db.rollback()
+
+    manager = db.query(User).filter(User.email == "manager@unifyx.com").first()
+    if manager is None:
+        manager = User(
+            email="manager@unifyx.com",
+            password_hash=hash_password("manager123"),
+            role=RoleEnum.MANAGER,
+        )
+        db.add(manager)
+        db.flush()
+
+    users = [
+        ("admin@unifyx.com", "admin123", RoleEnum.ADMIN, None),
+        ("rm1@unifyx.com", "rm123", RoleEnum.RM, manager.id),
+        ("rm2@unifyx.com", "rm123", RoleEnum.RM, manager.id),
+    ]
+    for email, password, role, manager_id in users:
+        if db.query(User).filter(User.email == email).first() is None:
+            db.add(
+                User(
+                    email=email,
+                    password_hash=hash_password(password),
+                    role=role,
+                    manager_id=manager_id,
+                )
+            )
+    db.commit()
 finally:
     db.close()
 
-print("\n✓ All done! Database is ready for Phase 2")
+ingest_summary = ingest_all()
+db = SessionLocal()
+try:
+    pipeline_summary = run_match_pipeline(db)
+    counts = {
+        model.__tablename__: db.query(model).count()
+        for model in (
+            User,
+            SourceRecord,
+            GoldenCustomer,
+            CustomerLink,
+            FieldProvenance,
+            ReviewQueueItem,
+            Opportunity,
+            ConfigEntry,
+            AuditLog,
+        )
+    }
+finally:
+    db.close()
+
+print("Ingestion summary:", ingest_summary)
+print("Pipeline summary:", pipeline_summary)
+print("Final row counts:")
+for table_name, row_count in counts.items():
+    print(f"  {table_name}: {row_count}")

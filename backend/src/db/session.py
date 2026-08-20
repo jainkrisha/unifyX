@@ -1,13 +1,14 @@
-import os
+from pathlib import Path
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+DB_PATH = BASE_DIR / "unifyx.db"
+DATABASE_URL = f"sqlite:///{DB_PATH}"
+print(f"DATABASE_URL={DATABASE_URL}")
 
-DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./unifyx.db"
-
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {})
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

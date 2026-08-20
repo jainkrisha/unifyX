@@ -293,11 +293,14 @@ def run_match_pipeline(db: Session) -> Dict[str, Any]:
                 summary["review_items"] += 1
 
     from src.pipeline.golden import materialize_golden_customers
+    from src.pipeline.opportunity import generate_opportunities
     from src.pipeline.resolve import resolve_linked_customers
 
     resolution_summary = resolve_linked_customers(db)
     golden_summary = materialize_golden_customers(db)
+    opportunity_summary = generate_opportunities(db)
     db.commit()
     summary.update(resolution_summary)
     summary.update(golden_summary)
+    summary.update(opportunity_summary)
     return summary
