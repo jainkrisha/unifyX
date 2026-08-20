@@ -3,3 +3,6 @@ uvicorn==0.30.6
 sqlalchemy==2.0.35
 alembic==1.13.3
 python-dotenv==1.0.1
+pandas>=2.1.0
+scikit-learn>=1.5.2
+recordlinkage>=0.16
