@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Tuple
 from sqlalchemy.exc import IntegrityError
-from .db.session import SessionLocal, engine, Base
+from .db.session import SessionLocal
 from .db.models import SourceRecord, AuditLog
 
 import pandas as pd
@@ -200,13 +200,7 @@ def ingest_all(dir_path: str = None, files: dict = None, actor_id=None):
     return summary
 
 
-def bootstrap_db():
-    # create tables if not exists
-    Base.metadata.create_all(bind=engine)
-
-
 if __name__ == "__main__":
-    bootstrap_db()
     base = Path(__file__).resolve().parents[1] / "data" / "raw" / "financial"
     print("Ingesting from:", base)
     result = ingest_all()

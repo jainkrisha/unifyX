@@ -1,18 +1,14 @@
-"""Bootstrap script to create database tables and seed config."""
+"""Bootstrap script to ensure the database is present and seed config."""
 import sqlite3
-from src.db.session import engine, Base
-from src.db.models import *
-from src.seed_config import seed_config, SessionLocal
-
-print("Creating database tables...")
-Base.metadata.create_all(bind=engine)
+from src.db.session import SessionLocal
+from src.seed_config import seed_config
 
 # Check what tables exist
 conn = sqlite3.connect('unifyx.db')
 cursor = conn.cursor()
 cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 tables = cursor.fetchall()
-print(f"✓ Tables created: {', '.join([t[0] for t in tables])}")
+print(f"✓ Existing tables: {', '.join([t[0] for t in tables])}")
 conn.close()
 
 print("\nSeeding configuration...")
