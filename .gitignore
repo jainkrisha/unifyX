@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment
+.env
+
+# ML models
+*.pkl
+
+# Generated training data
+backend/data/training/
+
+# Generated outputs
+backend/data/generated/
+
+# Keep raw datasets locally if large
+# backend/data/raw/
+
+# Keep enriched datasets locally if large
+# backend/data/enriched/
+
+# Node
+client/node_modules/
+client/dist/
+
+# IDE
+.vscode/
+.idea/
