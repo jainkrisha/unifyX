@@ -26,11 +26,34 @@ def build_features_and_labels():
 
     features = compare.compute(candidate_pairs, df_a, df_b)
     labels = np.asarray(candidate_pairs.isin(true_links), dtype=int)
-    return np.asarray(features), labels
+    row_ids = np.arange(len(candidate_pairs))
+    return np.asarray(features), labels, row_ids
+
+
+def test_train_test_split_has_no_overlap_and_preserves_all_rows():
+    X, y, row_ids = build_features_and_labels()
+    X_train, X_test, y_train, y_test, train_ids, test_ids = train_test_split(
+        X,
+        y,
+        row_ids,
+        test_size=0.3,
+        random_state=42,
+        stratify=y,
+    )
+
+    assert len(train_ids) + len(test_ids) == len(row_ids)
+    assert set(train_ids).isdisjoint(set(test_ids))
+    assert set(train_ids).union(set(test_ids)) == set(row_ids)
+
+    model = LogisticRegression(max_iter=1000, class_weight="balanced")
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+    assert len(y_pred) == len(y_test)
 
 
 def test_model_has_strong_holdout_validation_metrics():
-    X, y = build_features_and_labels()
+    X, y, _ = build_features_and_labels()
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
