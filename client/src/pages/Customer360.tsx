@@ -74,7 +74,7 @@ export function Customer360Page() {
   const c = detail?.customer;
 
   // Group provenance by field name to identify conflicts
-  const provenanceByField: Record<string, typeof detail.field_provenance> = {};
+  const provenanceByField: Record<string, NonNullable<CustomerDetail['field_provenance']>> = {};
   (detail?.field_provenance ?? []).forEach(p => {
     if (!provenanceByField[p.field_name]) provenanceByField[p.field_name] = [];
     provenanceByField[p.field_name].push(p);
@@ -210,7 +210,7 @@ export function Customer360Page() {
                             )}
                           </div>
                           {/* Narrated match_reasons — not raw JSON */}
-                          {matchReason && (
+                          {Boolean(matchReason) && (
                             <div style={{ fontSize: 12, color: 'var(--c-text-2)', background: 'var(--c-surface)', borderRadius: 6, padding: '6px 10px', borderLeft: '3px solid var(--c-brand-mid)' }}>
                               <strong>Match rationale:</strong> {renderMatchReasons(matchReason)}
                             </div>

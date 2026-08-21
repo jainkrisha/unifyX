@@ -1,6 +1,7 @@
 from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ..auth.jwt import get_current_user
@@ -52,6 +53,13 @@ def list_customers(
     db: Session = Depends(get_db),
 ) -> List[Dict[str, Any]]:
     query = scope_golden_customers(db.query(GoldenCustomer), current_user, db)
+    
+    # Sort by the amount of field provenances (conflicts) so models with differences appear first
+    query = query.outerjoin(FieldProvenance).group_by(GoldenCustomer.id).order_by(
+        func.count(FieldProvenance.id).desc(),
+        GoldenCustomer.id.desc()
+    )
+
     return [_customer_payload(c, can_unmask(current_user, unmask)) for c in query.offset(offset).limit(limit).all()]
 
 

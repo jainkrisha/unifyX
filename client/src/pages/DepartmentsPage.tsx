@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { customersApi, adminApi, CustomerSummary, ApiError } from '../api/client';
 import { ApiErrorBanner } from '../components/ApiErrorBanner';
+import { getNextSimulatedUser, remainingProfiles } from '../api/simulatedUsers';
+import { addNewUser } from '../api/newUserStore';
 
 const DEPT_META: Record<string, { icon: string; label: string; colorClass: string }> = {
   EQUITY:    { icon: '📈', label: 'Equity',      colorClass: 'sys-equity' },
@@ -101,24 +103,34 @@ export function DepartmentsPage() {
         await new Promise(resolve => setTimeout(resolve, 2400));
         clearTimeout(t1); clearTimeout(t2);
         setPipelineSteps(makePipelineSteps().map(s => ({ ...s, state: 'done' })));
+
+        // Pick a random unused profile from the pool
+        const profile = getNextSimulatedUser();
+        if (!profile) {
+          setPipelineErr({ detail: 'All demo profiles have been used this session. Refresh the page to reset.' });
+          setPipelineSteps(null);
+          return;
+        }
+
+        const gcId = 9800 + Math.floor(Math.random() * 200);
         setPipelineResult({
-          deterministic_links: 1,
-          probabilistic_links: 0,
+          deterministic_links: profile.auditLog.filter(a => a.action.includes('PAN')).length,
+          probabilistic_links: profile.auditLog.filter(a => !a.action.includes('PAN')).length,
           review_items_created: 0,
           user_id_processed: newUserId
         });
-        
+
         setSimulatedUser({
-          name: 'Rahul Sharma (Simulated)',
-          email: 'rahul.s@example.com',
-          phone: '+91-9876543210',
-          pan: 'ABCDE1234F',
-          status: 'Golden Customer: #GC-9821',
-          auditLog: [
-            { dept: 'Equity', action: 'Matched by PAN', date: '2026-08-21' },
-            { dept: 'Mutual Funds', action: 'Matched by Email & Phone', date: '2026-08-21' }
-          ],
-          review: 'Matched on PAN successfully across 2 source systems.'
+          name: profile.name,
+          email: profile.email,
+          phone: profile.phone,
+          pan: profile.pan,
+          city: profile.city,
+          relationship_value: profile.relationship_value,
+          status: `Golden Customer: #GC-${gcId}`,
+          auditLog: profile.auditLog,
+          review: profile.review,
+          pipelineUserId: newUserId,
         });
       } else {
         const res = await adminApi.runPipeline();
@@ -289,7 +301,18 @@ export function DepartmentsPage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
             <h3 style={{ margin: 0, color: 'var(--c-brand-dk)', fontSize: 16 }}>New user added — Simulated dataset</h3>
             {!isAddedToCustomers ? (
-              <button className="btn btn-primary" onClick={() => setIsAddedToCustomers(true)}>
+              <button className="btn btn-primary" onClick={() => {
+                addNewUser({
+                  primary_name: simulatedUser.name,
+                  pan_like: simulatedUser.pan,
+                  mobile: simulatedUser.phone,
+                  email: simulatedUser.email,
+                  city: simulatedUser.city,
+                  relationship_value: simulatedUser.relationship_value,
+                  pipeline_user_id: simulatedUser.pipelineUserId || '',
+                });
+                setIsAddedToCustomers(true);
+              }}>
                 + Add to current customers
               </button>
             ) : (
@@ -297,6 +320,15 @@ export function DepartmentsPage() {
                 ✓ Profile updated across all systems (RM & Manager)
               </div>
             )}
+          </div>
+
+          {/* Credentials for the simulated user */}
+          <div className="new-user-cred-banner">
+            <span className="demo-cred-icon" style={{ fontSize: 14 }}>🔑</span>
+            <span style={{ fontWeight: 600, fontSize: 13 }}>Credentials:</span>
+            <code style={{ fontSize: 12, padding: '2px 6px', background: 'rgba(255,255,255,0.15)', borderRadius: 4 }}>{simulatedUser.email}</code>
+            <span style={{ color: 'var(--c-text-3)', fontSize: 12 }}>/ password:</span>
+            <code style={{ fontSize: 12, padding: '2px 6px', background: 'rgba(255,255,255,0.15)', borderRadius: 4 }}>demo123</code>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 16, marginBottom: 16 }}>
@@ -374,7 +406,10 @@ export function DepartmentsPage() {
             </div>
           )}
 
-          <div style={{ marginTop: 24, textAlign: 'right', borderTop: '1px solid var(--c-border)', paddingTop: 16 }}>
+          <div style={{ marginTop: 24, textAlign: 'right', borderTop: '1px solid var(--c-border)', paddingTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: 'var(--c-text-3)' }}>
+              {remainingProfiles()} demo profile{remainingProfiles() !== 1 ? 's' : ''} remaining this session
+            </span>
             <button 
               className="btn btn-outline" 
               onClick={() => {
@@ -385,6 +420,7 @@ export function DepartmentsPage() {
                 setPipelineSteps(null);
                 setIsAddedToCustomers(false);
               }}
+              disabled={remainingProfiles() === 0}
             >
               ↻ Run identity matching of new user
             </button>

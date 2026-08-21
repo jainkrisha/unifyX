@@ -90,6 +90,31 @@ export function LandingPage() {
           {renderHeroActions()}
         </div>
 
+        {/* Demo credentials — only visible when not logged in */}
+        {!token && (
+          <div className="demo-credentials-card" id="demo-credentials">
+            <div className="demo-cred-header">
+              <span className="demo-cred-icon">🔑</span>
+              <span>Demo Credentials</span>
+            </div>
+            <div className="demo-cred-grid">
+              {[
+                { role: 'Admin',   email: 'admin@unifyx.com',   password: 'admin123',   badge: 'admin' },
+                { role: 'Manager', email: 'manager@unifyx.com', password: 'manager123', badge: 'mgr' },
+                { role: 'RM 1',    email: 'rm1@unifyx.com',     password: 'rm123',      badge: 'rm' },
+                { role: 'RM 2',    email: 'rm2@unifyx.com',     password: 'rm123',      badge: 'rm' },
+              ].map(cred => (
+                <div key={cred.email} className="demo-cred-row">
+                  <span className={`demo-cred-badge badge-${cred.badge}`}>{cred.role}</span>
+                  <code className="demo-cred-email">{cred.email}</code>
+                  <code className="demo-cred-pw">{cred.password}</code>
+                </div>
+              ))}
+            </div>
+            <div className="demo-cred-hint">Use these to sign in and explore different access scopes</div>
+          </div>
+        )}
+
         <div className="merge-stage">
           <div className="source-chips">
             <div className="chip eq"><span className="tag">Equity</span><span className="val mono">R. Sharma · PAN A1B2C3</span></div>

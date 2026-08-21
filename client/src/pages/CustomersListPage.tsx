@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { customersApi, CustomerSummary, ApiError } from '../api/client';
 import { ApiErrorBanner } from '../components/ApiErrorBanner';
+import { subscribe as subscribeNewUsers, NewUser } from '../api/newUserStore';
 
 const DEPT_LABELS: Record<string, string> = {
   EQUITY: 'Equity', MF: 'Mutual Funds', INSURANCE: 'Insurance', LOANS: 'Loans', WEALTH: 'Wealth',
@@ -16,6 +17,9 @@ export function CustomersListPage() {
   const [customers, setCustomers] = useState<CustomerSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<{ status?: number; detail: string } | null>(null);
+
+  // New users from the in-memory store (real-time across all roles)
+  const [newUsers, setNewUsers] = useState<NewUser[]>([]);
 
   const scopeNote =
     user?.role === 'ADMIN' ? 'All customers (ADMIN scope)' :
@@ -32,6 +36,12 @@ export function CustomersListPage() {
         else setError({ detail: String(err) });
       })
       .finally(() => setLoading(false));
+  }, []);
+
+  // Subscribe to newly added simulated users
+  useEffect(() => {
+    const unsub = subscribeNewUsers(setNewUsers);
+    return unsub;
   }, []);
 
   const displayed = customers; // all scoping done server-side
@@ -59,14 +69,14 @@ export function CustomersListPage() {
         </div>
       )}
 
-      {!loading && !error && displayed.length === 0 && (
+      {!loading && !error && displayed.length === 0 && newUsers.length === 0 && (
         <div className="empty-state">
           <div className="empty-state-icon">👤</div>
           <div className="empty-state-text">No customers in your scope.</div>
         </div>
       )}
 
-      {!loading && !error && displayed.length > 0 && (
+      {!loading && !error && (displayed.length > 0 || newUsers.length > 0) && (
         <div className="table-wrap">
           <table className="data-table">
             <thead>
@@ -81,6 +91,39 @@ export function CustomersListPage() {
               </tr>
             </thead>
             <tbody>
+              {/* ---- New Users section (from pipeline) ---- */}
+              {newUsers.length > 0 && (
+                <tr className="new-user-section-header">
+                  <td colSpan={7}>
+                    <span className="new-user-badge">NEW</span>
+                    New Users — added via pipeline this session
+                  </td>
+                </tr>
+              )}
+              {newUsers.map(nu => (
+                <tr key={`new-${nu.id}`} className="new-user-row">
+                  <td><strong>{nu.primary_name}</strong></td>
+                  <td><span className="mono">{nu.pan_like ?? '—'}</span></td>
+                  <td><span className="mono">{nu.mobile ?? '—'}</span></td>
+                  <td><span className="mono">{nu.email ?? '—'}</span></td>
+                  <td>{nu.city ?? '—'}</td>
+                  <td>
+                    {nu.relationship_value != null
+                      ? `₹${Number(nu.relationship_value).toLocaleString('en-IN')}`
+                      : '—'}
+                  </td>
+                  <td>
+                    <span className="new-user-badge" style={{ fontSize: 10 }}>SIMULATED</span>
+                  </td>
+                </tr>
+              ))}
+
+              {/* ---- Existing customers from API ---- */}
+              {newUsers.length > 0 && displayed.length > 0 && (
+                <tr className="existing-section-header">
+                  <td colSpan={7}>Existing Customers</td>
+                </tr>
+              )}
               {displayed.map(c => (
                 <tr key={c.id}>
                   <td><strong>{c.primary_name}</strong></td>
@@ -111,9 +154,10 @@ export function CustomersListPage() {
 
       {!loading && !error && (
         <div style={{ marginTop: 10, fontSize: 12, color: 'var(--c-text-4)' }}>
-          {displayed.length} record{displayed.length !== 1 ? 's' : ''} — PII masked by default; only Admin can unmask.
+          {displayed.length + newUsers.length} record{(displayed.length + newUsers.length) !== 1 ? 's' : ''} — PII masked by default; only Admin can unmask.
         </div>
       )}
     </div>
   );
 }
+

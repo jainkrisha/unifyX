@@ -357,3 +357,139 @@ details.json-expand pre { margin-top: 8px; background: var(--c-surface); border:
 /* ---- Config inline edit ---- */
 .config-value-cell { display: flex; align-items: flex-start; gap: 6px; }
 .config-textarea { font-family: 'SFMono-Regular', monospace; font-size: 12px; min-height: 60px; resize: vertical; }
+
+/* ---- Demo Credentials Card (Landing Page) ---- */
+.demo-credentials-card {
+  margin: 32px auto 0;
+  max-width: 520px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  backdrop-filter: blur(12px);
+  animation: fadeUp 0.5s ease-out;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.demo-cred-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+.demo-cred-icon { font-size: 16px; }
+.demo-cred-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.demo-cred-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background 0.15s;
+}
+.demo-cred-row:hover { background: rgba(255, 255, 255, 0.09); }
+.demo-cred-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  min-width: 56px;
+  text-align: center;
+}
+.demo-cred-badge.badge-admin { background: #ef4444; color: #fff; }
+.demo-cred-badge.badge-mgr   { background: #f59e0b; color: #1a1a2e; }
+.demo-cred-badge.badge-rm    { background: #6366f1; color: #fff; }
+.demo-cred-email {
+  flex: 1;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  background: none;
+  padding: 0;
+}
+.demo-cred-pw {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  background: none;
+  padding: 0;
+}
+.demo-cred-hint {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.01em;
+}
+
+/* ---- New User Badge & Row Highlights (Customers Table) ---- */
+.new-user-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  margin-right: 8px;
+  vertical-align: middle;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  50%      { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0); }
+}
+.new-user-section-header td {
+  padding: 12px 14px !important;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--c-brand-dk);
+  background: var(--c-brand-lt, #ede9fe);
+  border-bottom: 2px solid var(--c-brand-mid, #a78bfa);
+  letter-spacing: 0.01em;
+}
+.existing-section-header td {
+  padding: 10px 14px !important;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--c-text-3);
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.new-user-row {
+  background: rgba(99, 102, 241, 0.04);
+  border-left: 3px solid #6366f1;
+}
+.new-user-row:hover { background: rgba(99, 102, 241, 0.08); }
+.new-user-row td { border-bottom-color: rgba(99, 102, 241, 0.12); }
+
+/* ---- Credentials Banner (Pipeline Card) ---- */
+.new-user-cred-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08));
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 8px;
+}
+

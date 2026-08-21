@@ -219,11 +219,11 @@ function ReviewItem({
           </div>
 
           {/* Reason */}
-          {item.reason && (
+          {item.reason != null ? (
             <div style={{ fontSize: 13, color: 'var(--c-text-2)', marginBottom: 10 }}>
-              {item.reason}
+              {typeof item.reason === 'string' ? item.reason : JSON.stringify(item.reason)}
             </div>
-          )}
+          ) : null}
 
           {/* Candidate values side by side */}
           <div className="conflict-grid">
@@ -246,7 +246,7 @@ function ReviewItem({
           </div>
 
           {/* Context (collapsed) */}
-          {item.context && (
+          {Boolean(item.context) && (
             <details className="json-expand" style={{ marginTop: 10 }}>
               <summary>Context detail</summary>
               <pre>{JSON.stringify(item.context, null, 2)}</pre>
