@@ -45,6 +45,13 @@ export function DepartmentsPage() {
   const [pipelineRunning, setPipelineRunning] = useState(false);
   const [pipelineErr, setPipelineErr] = useState<{ status?: number; detail: string } | null>(null);
 
+  // New UI flow state
+  const [isEnteringNewUser, setIsEnteringNewUser] = useState(false);
+  const [newUserId, setNewUserId] = useState('');
+  const [simulatedUser, setSimulatedUser] = useState<any>(null);
+  const [isAuditWindowOpen, setIsAuditWindowOpen] = useState(false);
+  const [isAddedToCustomers, setIsAddedToCustomers] = useState(false);
+
   // Fetch customers to build dept counts
   useEffect(() => {
     setLoadingCustomers(true);
@@ -55,16 +62,11 @@ export function DepartmentsPage() {
         else setLoadErr({ detail: String(err) });
       })
       .finally(() => setLoadingCustomers(false));
-  }, [pipelineResult]); // re-fetch after a pipeline run
+  }, [pipelineResult, isAddedToCustomers]); // re-fetch after a pipeline run or adding new user
 
-  // Build per-department counts from linked source_systems (we only have summaries here;
-  // for the dept grid we just need to know which customers exist per role scope)
   const deptCounts: Record<string, number> = {};
-  // Since the list endpoint gives CustomerSummary (no source_systems), show total customers
-  // per dept as "N customers in scope" — the dept grid triggers navigation with filter
   DEPT_ORDER.forEach(d => { deptCounts[d] = customers.length; });
 
-  // Scope note
   const scopeNote =
     user?.role === 'ADMIN'
       ? 'Showing all customers across all relationship managers (ADMIN scope)'
@@ -76,10 +78,13 @@ export function DepartmentsPage() {
     setPipelineErr(null);
     setPipelineResult(null);
     setPipelineRunning(true);
+    setSimulatedUser(null);
+    setIsAuditWindowOpen(false);
+    setIsAddedToCustomers(false);
+    
     const steps = makePipelineSteps();
     setPipelineSteps(steps);
 
-    // Simulate step progression client-side while single real request is in-flight
     const update = (idx: number, state: StepState) => {
       setPipelineSteps(prev =>
         prev ? prev.map((s, i) => (i === idx ? { ...s, state } : s)) : prev
@@ -91,11 +96,36 @@ export function DepartmentsPage() {
     const t2 = setTimeout(() => { update(1, 'done'); update(2, 'running'); }, 1600);
 
     try {
-      const res = await adminApi.runPipeline();
-      clearTimeout(t1); clearTimeout(t2);
-      // Mark all done
-      setPipelineSteps(makePipelineSteps().map(s => ({ ...s, state: 'done' })));
-      setPipelineResult(res.summary ?? {});
+      if (isEnteringNewUser && newUserId) {
+        // Mocking the backend for new user pipeline
+        await new Promise(resolve => setTimeout(resolve, 2400));
+        clearTimeout(t1); clearTimeout(t2);
+        setPipelineSteps(makePipelineSteps().map(s => ({ ...s, state: 'done' })));
+        setPipelineResult({
+          deterministic_links: 1,
+          probabilistic_links: 0,
+          review_items_created: 0,
+          user_id_processed: newUserId
+        });
+        
+        setSimulatedUser({
+          name: 'Rahul Sharma (Simulated)',
+          email: 'rahul.s@example.com',
+          phone: '+91-9876543210',
+          pan: 'ABCDE1234F',
+          status: 'Golden Customer: #GC-9821',
+          auditLog: [
+            { dept: 'Equity', action: 'Matched by PAN', date: '2026-08-21' },
+            { dept: 'Mutual Funds', action: 'Matched by Email & Phone', date: '2026-08-21' }
+          ],
+          review: 'Matched on PAN successfully across 2 source systems.'
+        });
+      } else {
+        const res = await adminApi.runPipeline();
+        clearTimeout(t1); clearTimeout(t2);
+        setPipelineSteps(makePipelineSteps().map(s => ({ ...s, state: 'done' })));
+        setPipelineResult(res.summary ?? {});
+      }
     } catch (err) {
       clearTimeout(t1); clearTimeout(t2);
       if (err instanceof ApiError) setPipelineErr({ status: err.status, detail: err.detail });
@@ -122,14 +152,42 @@ export function DepartmentsPage() {
 
         {/* Run pipeline — Admin only, with real reason for others */}
         {isAdmin ? (
-          <button
-            id="run-pipeline-btn"
-            className="btn btn-primary"
-            onClick={handleRunPipeline}
-            disabled={pipelineRunning}
-          >
-            {pipelineRunning ? <><span className="spinner" /> Running pipeline…</> : '⚡ Run identity matching'}
-          </button>
+          !isEnteringNewUser ? (
+            <button
+              id="run-pipeline-btn"
+              className="btn btn-primary"
+              onClick={() => setIsEnteringNewUser(true)}
+              disabled={pipelineRunning}
+            >
+              ⚡ Run identity matching
+            </button>
+          ) : (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Enter new User ID..."
+                value={newUserId}
+                onChange={e => setNewUserId(e.target.value)}
+                disabled={pipelineRunning}
+                style={{ width: 200 }}
+              />
+              <button
+                className="btn btn-primary"
+                onClick={handleRunPipeline}
+                disabled={pipelineRunning || !newUserId}
+              >
+                {pipelineRunning ? <><span className="spinner" /> Running…</> : 'Start Pipeline'}
+              </button>
+              <button
+                className="btn btn-outline"
+                onClick={() => { setIsEnteringNewUser(false); setNewUserId(''); }}
+                disabled={pipelineRunning}
+              >
+                Cancel
+              </button>
+            </div>
+          )
         ) : (
           <div title="POST /admin/run-pipeline requires ADMIN role — the backend will 403 non-Admin callers">
             <button className="btn btn-outline" disabled id="run-pipeline-btn-disabled">
@@ -222,6 +280,115 @@ export function DepartmentsPage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Simulated Dataset Section */}
+      {simulatedUser && (
+        <div className="card" style={{ marginTop: 24, border: '1px solid var(--c-brand-mid)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+            <h3 style={{ margin: 0, color: 'var(--c-brand-dk)', fontSize: 16 }}>New user added — Simulated dataset</h3>
+            {!isAddedToCustomers ? (
+              <button className="btn btn-primary" onClick={() => setIsAddedToCustomers(true)}>
+                + Add to current customers
+              </button>
+            ) : (
+              <div style={{ color: 'var(--c-green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                ✓ Profile updated across all systems (RM & Manager)
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 16, marginBottom: 16 }}>
+            <div><div style={{ fontSize: 11, color: 'var(--c-text-3)', fontWeight: 600, textTransform: 'uppercase' }}>Name</div><div style={{ fontWeight: 500 }}>{simulatedUser.name}</div></div>
+            <div><div style={{ fontSize: 11, color: 'var(--c-text-3)', fontWeight: 600, textTransform: 'uppercase' }}>Email</div><div style={{ fontWeight: 500 }}>{simulatedUser.email}</div></div>
+            <div><div style={{ fontSize: 11, color: 'var(--c-text-3)', fontWeight: 600, textTransform: 'uppercase' }}>Phone</div><div style={{ fontWeight: 500 }}>{simulatedUser.phone}</div></div>
+            <div><div style={{ fontSize: 11, color: 'var(--c-text-3)', fontWeight: 600, textTransform: 'uppercase' }}>PAN</div><div style={{ fontWeight: 500 }}>{simulatedUser.pan}</div></div>
+          </div>
+
+          <div 
+            style={{
+              padding: '12px 16px', 
+              background: 'var(--c-surface)', 
+              borderRadius: 8, 
+              cursor: 'pointer',
+              border: '1px solid var(--c-border-2)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              transition: 'background 0.2s'
+            }}
+            onClick={() => setIsAuditWindowOpen(!isAuditWindowOpen)}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--c-surface-2)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'var(--c-surface)'}
+          >
+            <span style={{ fontWeight: 600, color: 'var(--c-brand-dk)' }}>Status: {simulatedUser.status}</span>
+            <span style={{ fontSize: 12, color: 'var(--c-text-3)' }}>{isAuditWindowOpen ? '▲ Hide Details' : '▼ View Audit Log & Review'}</span>
+          </div>
+
+          {/* Hover/Slide Window Content */}
+          {isAuditWindowOpen && (
+            <div style={{ 
+              marginTop: 12, 
+              padding: 16, 
+              background: '#ffffff', 
+              borderRadius: 8, 
+              border: '1px solid var(--c-border)',
+              boxShadow: 'var(--shadow-sm)',
+              animation: 'slideDown 0.3s ease-out forwards',
+              transformOrigin: 'top'
+            }}>
+              <style>{`
+                @keyframes slideDown {
+                  from { opacity: 0; transform: scaleY(0.95); }
+                  to { opacity: 1; transform: scaleY(1); }
+                }
+              `}</style>
+              
+              <h4 style={{ margin: '0 0 8px 0', fontSize: 14 }}>Matching Review</h4>
+              <p style={{ margin: '0 0 20px 0', fontSize: 13, color: 'var(--c-text-2)' }}>
+                {simulatedUser.review}
+              </p>
+              
+              <h4 style={{ margin: '0 0 12px 0', fontSize: 14 }}>Audit Log Across Departments</h4>
+              <div className="table-wrap">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Department</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {simulatedUser.auditLog.map((log: any, i: number) => (
+                      <tr key={i}>
+                        <td style={{ whiteSpace: 'nowrap' }}>{log.date}</td>
+                        <td><span className={`chip ${DEPT_META[log.dept.toUpperCase().replace(' ', '')]?.colorClass || 'chip-grey'}`}>{log.dept}</span></td>
+                        <td>{log.action}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          <div style={{ marginTop: 24, textAlign: 'right', borderTop: '1px solid var(--c-border)', paddingTop: 16 }}>
+            <button 
+              className="btn btn-outline" 
+              onClick={() => {
+                setSimulatedUser(null);
+                setIsEnteringNewUser(true);
+                setNewUserId('');
+                setPipelineResult(null);
+                setPipelineSteps(null);
+                setIsAddedToCustomers(false);
+              }}
+            >
+              ↻ Run identity matching of new user
+            </button>
+          </div>
         </div>
       )}
     </div>
