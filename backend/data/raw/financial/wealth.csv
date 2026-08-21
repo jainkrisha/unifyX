@@ -1,7 +1,7 @@
 name,pan_like_id,mobile,email,city,dob,source_customer_id,advisor_assigned,total_aum,risk_profile
 Jai Kota,LJOLO3150A,0310518347,ykibe@example.com,Jhansi,1964-10-13,WEA-DEMO-s4b,Irya Sampath,2500000,CONSERVATIVE
 Daniel Gala,YYDSB6064S,2343098050,daksheshtrivedi@example.org,Coimbatore,1986-10-25,WEA-0001,Netra Dar,7224068,MODERATE
-Ekaja Zachariah,YSJTN1223E,6587603669,wahuja@example.com,Gurgaon,1984-04-25,WEA-0010,Vinaya Kanda,25293170,CONSERVATIVE
+Ekaja Zachariah,YSJTN1223E,6587603669,wahuja@example.com,Phagwara,1984-04-25,WEA-0010,Vinaya Kanda,25293170,CONSERVATIVE
 Atharv Muni,ELSOP9663G,9190586518,bcherian@example.com,Jamnagar,1979-10-18,WEA-0013,Veda Shroff,31448882,CONSERVATIVE
 Vamakshi Swaminathan,OZSPT7014Q,7885685574,hansdiya@example.org,Nellore,1970-02-26,WEA-0015,Aradhana Vohra,22753744,MODERATE
 Naksh Agate,SCOST6797S,1349361832,gandhidamyanti@example.net,Bahraich,1966-02-08,WEA-0018,Neha Magar,16079183,CONSERVATIVE
@@ -23,7 +23,7 @@ Yuvraj Dutta,WKFGD5953F,7016873395,ssinghal@example.net,Moradabad,1979-08-06,WEA
 Chakradev Rattan,XJSEY0983G,8499121655,yashodhararatti@example.net,Ranchi,1962-05-07,WEA-0052,Urvi Venkataraman,9363463,AGGRESSIVE
 Manthan Varma,KZNVT2595L,8887947055,avi97@example.com,Faridabad,1986-04-23,WEA-0053,Lajita Divan,45754425,MODERATE
 Azad Choudhary,AJASN3075A,0283857865,irya49@example.com,Shahjahanpur,1972-11-28,WEA-0054,Umang Mishra,13874170,MODERATE
-Sarthak Suresh,YURSH5758K,6524041574,anita21@example.net,Latur,1962-11-13,WEA-0055,Viraj Ben,39922119,AGGRESSIVE
+Sarthak Suresh,YURSH5758K,6524041574,anita21@example.net,Dewas,1962-11-13,WEA-0055,Viraj Ben,39922119,AGGRESSIVE
 Christopher Setty,KDJDR2867Z,0640391065,sodhiazad@example.com,Bokaro,1994-06-21,WEA-0060,Kavya Raja,47701848,AGGRESSIVE
 Krishna Prashad,HLIZH1825I,0047868633,ranbir10@example.net,Srikakulam,1994-05-05,WEA-0061,Wridesh Jhaveri,38508841,AGGRESSIVE
 Harrison Bandi,VCZCO7903I,0284395995,odikamital@example.com,Proddatur,2002-05-15,WEA-0062,Prisha Tandon,18394050,CONSERVATIVE
@@ -42,7 +42,7 @@ Kashish Dar,ZHCZE8023D,4518705349,lpillay@example.com,Bongaigaon,1994-02-04,WEA-
 Arjun Kaul,AWQYV8505U,1383670241,dpradhan@example.net,Amaravati,1964-11-03,WEA-0089,Meera Borde,4054506,CONSERVATIVE
 Jagdish Chana,NUJFT2490P,6804420678,zchaudry@example.org,Ahmedabad,1963-05-08,WEA-0091,Kalpit Hora,38771525,MODERATE
 Bakhshi Korpal,EDFRY4768I,3838065787,lipika42@example.org,Kavali,1970-04-09,WEA-0093,Dalbir Sodhi,36069249,MODERATE
-Viraj Dutta,IYVDW1334O,5223955905,waidamore@example.org,Agra,1964-08-09,WEA-0094,Theodore Bahri,21493721,AGGRESSIVE
+Viraj Dutta,IYVDW1334O,5223955905,viraj.dutta49@gmail.com,Agra,1964-08-09,WEA-0094,Theodore Bahri,21493721,AGGRESSIVE
 Frederick Padmanabhan,JDYHA8693I,9374160898,senoscar@example.org,Nellore,1966-03-09,WEA-0100,Farhan Saran,9345232,MODERATE
 Manbir Kuruvilla,JZJUR5116H,0998616229,chaudhuribhavika@example.net,Bulandshahr,1972-04-03,WEA-0101,Urvashi Barad,3675011,MODERATE
 Anya Rau,CZVSP2996D,4505444713,amruta69@example.net,Maheshtala,1980-01-26,WEA-0102,Vedhika Varty,39600958,AGGRESSIVE
@@ -60,11 +60,11 @@ Anita Saxena,MDOVO2829K,8845783174,chavvianne@example.org,Hapur,1973-04-02,WEA-0
 Aditya Sani,JXMAJ4930B,3266341638,nitara31@example.org,Ramagundam,1965-06-28,WEA-0145,Sneha Magar,44173862,CONSERVATIVE
 Tejas Chowdhury,KYRLH3650Z,0097925132,darpan05@example.net,Jorhat,1995-06-17,WEA-0148,Vinaya Kaul,7655753,AGGRESSIVE
 Sudiksha Acharya,NXXNP8620U,8638782945,virkekalinga@example.org,Mangalore,1999-01-25,WEA-0150,Hredhaan Sunder,32827579,CONSERVATIVE
-Ekiya Khosla,XJVQX9836C,6004908240,anthony48@example.net,Bareilly,1962-04-18,WEA-0153,Nachiket Devi,9202802,MODERATE
+Ekiya Khosla,XJVQX9836C,6004909096,anthony48@example.net,Bareilly,1962-04-18,WEA-0153,Nachiket Devi,9202802,MODERATE
 Jeevika Krish,KZKNU3441E,7279194096,radha61@example.org,Eluru,1963-01-06,WEA-0154,Eiravati Zacharia,35051879,CONSERVATIVE
 Ryan Prakash,PNJSA2110V,4770538338,sdhaliwal@example.net,Gandhinagar,1986-04-15,WEA-0157,Aadhya Garde,45146306,AGGRESSIVE
 Bhanumati Iyer,PAEYQ9407R,1046368157,rushiltella@example.com,Thane,1971-07-09,WEA-0158,Gauri Suri,39005165,AGGRESSIVE
-Karan Goyal,MKNOM0994O,0517289752,nihalhans@example.org,Alappuzha,1994-04-10,WEA-0161,Anamika Sachar,11563599,AGGRESSIVE
+Karan Goyal,MKNOM0994O,0517289752,karan.goyal12@yahoo.co.in,Alappuzha,1994-04-10,WEA-0161,Anamika Sachar,11563599,AGGRESSIVE
 Ranveer Manne,DKBSN7644D,7718129826,golasudiksha@example.net,Malda,1964-08-08,WEA-0163,Nihal Dasgupta,35382978,CONSERVATIVE
 Ishaan Sengupta,UYGNK5186Y,0259222206,pratyush12@example.org,Nizamabad,1961-03-04,WEA-0164,Wishi Ahluwalia,36361949,AGGRESSIVE
 Wazir Kalla,CFMMA9776P,9830220502,garima10@example.org,Mangalore,1967-09-25,WEA-0165,Peter Shah,10209671,MODERATE
@@ -82,7 +82,7 @@ Urmi Dash,SPPBH4627W,7195979647,ladnicholas@example.net,Ulhasnagar,1974-09-13,WE
 Anjali Patel,SHOEG6504M,1928554451,agastyadevan@example.net,Serampore,1994-11-26,WEA-0202,Harini Gaba,5234605,AGGRESSIVE
 Utkarsh Mohanty,BSWYH2321E,7603108907,mitraadvaith@example.org,Madanapalle,1969-09-03,WEA-0204,Qasim Panchal,37442173,MODERATE
 Pratyush Pant,OAHWU6638H,1827548015,tanmayi94@example.net,Kamarhati,1985-01-02,WEA-0206,Priya Gulati,35848012,MODERATE
-Unnati Jaggi,QIVZI4778I,0616756770,nitesh76@example.org,Pali,1982-01-30,WEA-0209,Vritti Zacharia,3842406,AGGRESSIVE
+Unnati Jaggi,QIVZI4778I,0616756770,unnati.jaggi11@outlook.com,Pali,1982-01-30,WEA-0209,Vritti Zacharia,3842406,AGGRESSIVE
 Vamakshi Dugar,FLYNR8064W,5009025590,wpai@example.com,Pimpri-Chinchwad,1989-09-23,WEA-0210,Wahab Muni,19425098,AGGRESSIVE
 Samar Sachar,RMPZP4424H,3034778660,ayushkuruvilla@example.com,Kalyan-Dombivli,2003-01-16,WEA-0214,Anmol Bhakta,18567535,MODERATE
 Dipta Misra,ZUIPH1651K,8984713915,pallavikamdar@example.org,Akola,1970-01-20,WEA-0215,Ria Rege,20164739,AGGRESSIVE
@@ -95,7 +95,7 @@ Advaith Varughese,ZXKBD1155Z,2908466845,netrasehgal@example.net,Tinsukia,1988-02
 Yashica Pandya,TKVAD1017V,9989354492,narangzaitra@example.net,Karimnagar,1980-08-16,WEA-0236,Pavani Sabharwal,37900284,MODERATE
 George Bhatia,CEXRH6273Z,4976776228,yochanawadhwa@example.org,Sirsa,1981-06-18,WEA-0237,Kala Dani,35166633,MODERATE
 Imaran Dara,HJHXT5940X,4702296044,dasikshita@example.org,Erode,1981-10-21,WEA-0238,Sneha Nazareth,32792431,AGGRESSIVE
-Vaishnavi Deo,QCJUU2877F,6365807412,chadareyansh@example.net,Jehanabad,1983-08-05,WEA-0239,Yadavi Bahl,11905327,MODERATE
+Vaishnavi Deo,QCJUU2877F,6365807412,chadareyansh@example.net,Kozhikode,1983-08-05,WEA-0239,Yadavi Bahl,11905327,MODERATE
 Pranit Bahl,CFZIM4339U,9070562608,contractorhardik@example.net,Baranagar,1966-12-21,WEA-0240,Gaurav Dube,38777207,MODERATE
 Veda Balakrishnan,JLRGP6304W,4967183258,cseth@example.org,Udupi,1973-05-12,WEA-0242,Aadi Bhasin,43213169,AGGRESSIVE
 Sudiksha Rajagopalan,GVPRY7699B,8593110919,isha67@example.net,Gaya,1971-05-02,WEA-0249,Darpan Datta,46407350,AGGRESSIVE
@@ -126,7 +126,7 @@ Logan Wable,CYPSA4765S,2009282066,utkarsh62@example.com,Nagaon,1977-03-31,WEA-03
 Dayamai Guha,RFKKC8303K,0051405468,kai15@example.com,Ambala,1996-03-01,WEA-0305,Arjun Raja,4124720,CONSERVATIVE
 Arin Sampath,JERZF4421T,6834201654,esubramaniam@example.net,Junagadh,1976-03-29,WEA-0310,Advaith Issac,48855903,CONSERVATIVE
 Gagan Chawla,GFVWN1096I,7890463378,wdash@example.com,Tenali,1960-12-20,WEA-0313,Udarsh Tripathi,13575649,MODERATE
-Amrita Lalla,ACABJ4630Y,8955296386,sanghvikabir@example.net,Malegaon,1978-05-16,WEA-0314,Zansi Dutt,7931871,CONSERVATIVE
+Amrita Lalla,ACABJ4630Y,8955296386,sanghvikabir@example.net,Jalandhar,1978-05-16,WEA-0314,Zansi Dutt,7931871,CONSERVATIVE
 Vihaan Chaudhary,YZWOQ2819J,5311060920,vbakshi@example.net,Malda,1988-07-20,WEA-0315,Rachit Khatri,1828164,MODERATE
 Tarak Patla,IOFUS1305I,4731584776,oscar34@example.com,Ballia,1995-07-14,WEA-0318,Noah Jha,8178794,CONSERVATIVE
 Yatan Bora,XUHAU3552S,5379538164,harshilmall@example.net,Chapra,1999-11-30,WEA-0320,Radhika Nadkarni,26236644,MODERATE
@@ -144,7 +144,7 @@ Yasti Trivedi,LCQUJ9536Y,1398986818,rnadig@example.org,Latur,1975-02-05,WEA-0350
 Hritik Bath,OCVBS1576W,2298120995,ggoda@example.net,Jalandhar,1970-11-08,WEA-0353,Harita Bava,19671409,AGGRESSIVE
 Gopal Jhaveri,MCIIZ8820M,7053496782,saxenarachana@example.com,Chandigarh,1998-09-03,WEA-0355,Jackson Pandya,27690260,CONSERVATIVE
 Watika Mandal,UVNAB2318E,8932064969,charitakata@example.com,Unnao,1995-09-10,WEA-0357,Ishanvi Srivastava,33570475,MODERATE
-Gopal Kanda,UPQBH1467L,5156277963,nilimabhat@example.net,Bhilwara,1990-05-02,WEA-0358,Mahika Sathe,2092623,CONSERVATIVE
+Gopal Kanda,UPQBH1467L,5156277963,gopal.kanda77@example.net,Bhilwara,1990-05-02,WEA-0358,Mahika Sathe,2092623,CONSERVATIVE
 Mohini Lad,VOCTC0473A,9283199529,xchana@example.net,Nagercoil,1994-05-17,WEA-0359,Chandran Venkataraman,19389134,CONSERVATIVE
 Janaki Wason,TOSZK3286X,6383000818,barkhamitra@example.org,Shahjahanpur,1962-02-13,WEA-0360,Krishna Rattan,27598032,AGGRESSIVE
 Anamika Chad,BAVIM1186J,9639456804,lallaurishilla@example.com,Haldia,1964-09-23,WEA-0361,Arya Subramanian,32997956,CONSERVATIVE
@@ -159,7 +159,7 @@ Balhaar Wali,IGIUJ6321O,6457938970,dinharrison@example.com,Naihati,2001-06-10,WE
 Kai Maharaj,GOOBT4795U,1949796958,ozaharini@example.com,Raiganj,1967-04-25,WEA-0382,Shivansh Walia,18646252,AGGRESSIVE
 Keya Yogi,GZNNH2691K,2268653694,yadavi88@example.com,Sambhal,1982-05-29,WEA-0384,Bhavini Sengupta,46239456,AGGRESSIVE
 Janani Manne,ETCRS4294J,2946430394,januja88@example.com,Tadipatri,2000-03-26,WEA-0389,Nachiket Thaker,35613015,CONSERVATIVE
-Vansha Shetty,YOEME1805H,1731893974,uchoudhury@example.com,Giridih,1996-02-02,WEA-0392,Aadi Krishnamurthy,14114576,AGGRESSIVE
+Vansha Shetty,YOEME1805H,1731893974,uchoudhury@example.com,Arrah,1996-02-02,WEA-0392,Aadi Krishnamurthy,14114576,AGGRESSIVE
 Hema Yohannan,NTGTU2313X,1493925236,eshanavarty@example.com,Agartala,1970-09-12,WEA-0394,Urmi Mitter,36555248,CONSERVATIVE
 Max Dora,JFCPU9493K,8840215573,trivenipathak@example.com,Rampur,1971-11-14,WEA-0397,Logan Dar,27370607,AGGRESSIVE
 Ganga Bora,HXSVB2957B,9409600356,tanvi39@example.com,Maheshtala,1994-08-24,WEA-0399,Darika Golla,28280595,CONSERVATIVE
@@ -279,7 +279,7 @@ Dev Sarma,BJAJY9967M,4748599464,isaiah67@example.org,Berhampore,1983-06-21,WEA-0
 Harsh Parekh,SGJQX3056K,7846790870,oeshibanerjee@example.org,Kurnool,1979-06-15,WEA-0638,Champak Kashyap,35669114,AGGRESSIVE
 Chakrika Mitter,CZERQ4299V,8652406221,isridhar@example.com,Mangalore,1968-09-27,WEA-0639,Jeet Anand,28709510,CONSERVATIVE
 Krisha Sani,LKLYB4509S,1089857390,girishchada@example.net,Nagaon,1973-06-01,WEA-0646,Onkar Menon,32551016,CONSERVATIVE
-Siya Bumb,HTQVZ7059G,3672868112,radha81@example.org,Phagwara,2004-01-09,WEA-0648,Fariq Maharaj,45695032,CONSERVATIVE
+Siya Bumb,HTQVZ7059G,3672868112,radha81@example.org,Karaikudi,2004-01-09,WEA-0648,Fariq Maharaj,45695032,CONSERVATIVE
 Samuel Rattan,NYWZI1587C,3589693353,ekanta61@example.com,Hospet,1989-12-03,WEA-0651,Gaurika Raju,27562245,CONSERVATIVE
 Wriddhish Sura,YHGYS9255P,9028377270,aradhakrishnan@example.org,Kulti,1973-08-12,WEA-0652,Krishna Kumer,42516553,MODERATE
 Ekapad Sachar,SDUON1019V,6405103880,lallaluke@example.com,Dhule,1979-03-19,WEA-0653,Adya Lad,48065334,AGGRESSIVE
@@ -291,11 +291,11 @@ Aayush Aggarwal,FHQHZ8899Z,0916923273,ybasu@example.org,Dewas,1984-07-16,WEA-066
 Lipika Konda,LGRRO0009P,1137118151,forum82@example.net,Jalgaon,2003-06-09,WEA-0667,Abha Arora,42964853,CONSERVATIVE
 Janani Jani,ABCUY5346K,4946672010,dewangavin@example.net,Durgapur,1989-05-08,WEA-0668,Bhavya Agarwal,8080936,AGGRESSIVE
 Mahika Dhaliwal,EFQSU0858I,3536423570,girindradewan@example.net,Aligarh,1984-10-15,WEA-0669,Ekaraj Goda,45126217,CONSERVATIVE
-Hiral Badami,DDMLO4610D,6600128382,gillsai@example.org,Coimbatore,1976-01-27,WEA-0670,Ayushman Lalla,17154617,AGGRESSIVE
+Hiral Badami,DDMLO4610D,6600123674,gillsai@example.org,Coimbatore,1976-01-27,WEA-0670,Ayushman Lalla,17154617,AGGRESSIVE
 Advay Tank,XUWQT6653Y,4227634601,abhimanyupau@example.com,Tirupati,1982-04-11,WEA-0671,Aashi Keer,49742059,CONSERVATIVE
 Oviya Chacko,KUWGV7682R,7267086665,faraj97@example.com,Sasaram,1998-04-23,WEA-0672,Chaaya Solanki,10065448,MODERATE
 Utkarsh Baria,ALZSJ7681A,5780024432,jairajraman@example.net,Yamunanagar,1987-02-22,WEA-0679,Indira Shah,4632465,MODERATE
-Isaiah Yohannan,ISGEO3924B,4169105302,usoni@example.com,Ramagundam,1978-06-04,WEA-0681,Vihaan Narayan,15903914,MODERATE
+Isaiah Yohannan,ISGEO3924B,4169105302,usoni@example.com,Thanjavur,1978-06-04,WEA-0681,Vihaan Narayan,15903914,MODERATE
 Widisha Toor,JYOCW1554Q,2360244654,balhaarparmar@example.org,Kota,1961-11-02,WEA-0683,Darsh Tella,37785885,MODERATE
 Jason Pathak,PWOEQ6478U,3175438027,tripti26@example.org,Phusro,1968-03-27,WEA-0684,Meera Wable,47833297,CONSERVATIVE
 Niharika Balan,LROLD4886S,5340508927,narangshivani@example.com,Bangalore,1974-06-18,WEA-0686,Nisha Seshadri,46080215,MODERATE

@@ -75,9 +75,15 @@ def list_review_queue(
                 "mobile": item.candidate_source_record.mobile if allowed_unmask else mask_pii(item.candidate_source_record.mobile),
                 "email": item.candidate_source_record.email if allowed_unmask else mask_pii(item.candidate_source_record.email),
             },
+            "candidate_source_record_2": {
+                "pan_like": item.candidate_source_record_2.pan_like if allowed_unmask else mask_pii(item.candidate_source_record_2.pan_like),
+                "mobile": item.candidate_source_record_2.mobile if allowed_unmask else mask_pii(item.candidate_source_record_2.mobile),
+                "email": item.candidate_source_record_2.email if allowed_unmask else mask_pii(item.candidate_source_record_2.email),
+            } if (item.candidate_source_record_id_2 and item.candidate_source_record_2) else None,
         }
         for item in items
     ]
+
 
 
 @router.post("/review-queue/{item_id}/resolve")

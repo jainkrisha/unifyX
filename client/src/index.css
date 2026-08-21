@@ -362,11 +362,11 @@ details.json-expand pre { margin-top: 8px; background: var(--c-surface); border:
 .demo-credentials-card {
   margin: 32px auto 0;
   max-width: 520px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
   border-radius: var(--radius-lg);
   padding: 20px 24px;
-  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   animation: fadeUp 0.5s ease-out;
 }
 @keyframes fadeUp {
@@ -379,7 +379,7 @@ details.json-expand pre { margin-top: 8px; background: var(--c-surface); border:
   gap: 8px;
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--c-text);
   margin-bottom: 14px;
   letter-spacing: 0.02em;
 }
@@ -393,13 +393,16 @@ details.json-expand pre { margin-top: 8px; background: var(--c-surface); border:
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  transition: background 0.15s;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  transition: background 0.15s, border-color 0.15s;
 }
-.demo-cred-row:hover { background: rgba(255, 255, 255, 0.09); }
+.demo-cred-row:hover {
+  background: var(--c-surface-2);
+  border-color: var(--c-border-2);
+}
 .demo-cred-badge {
   display: inline-block;
   font-size: 10px;
@@ -416,22 +419,25 @@ details.json-expand pre { margin-top: 8px; background: var(--c-surface); border:
 .demo-cred-badge.badge-rm    { background: #6366f1; color: #fff; }
 .demo-cred-email {
   flex: 1;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 12.5px;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  color: var(--c-text);
   background: none;
   padding: 0;
+  text-align: left;
 }
 .demo-cred-pw {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  color: var(--c-text-3);
   background: none;
   padding: 0;
 }
 .demo-cred-hint {
   margin-top: 12px;
   text-align: center;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: 11.5px;
+  color: var(--c-text-3);
   letter-spacing: 0.01em;
 }
 

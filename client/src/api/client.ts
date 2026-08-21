@@ -166,6 +166,11 @@ export interface ReviewQueueItem {
     mobile: string | null;
     email: string | null;
   };
+  candidate_source_record_2: {
+    pan_like: string | null;
+    mobile: string | null;
+    email: string | null;
+  } | null;
 }
 
 export interface ResolveRequest {
@@ -212,6 +217,8 @@ export interface AuditLogEntry {
   action: string;
   entity_type: string;
   entity_id: string | null;
+  entity_name?: string | null;
+  entity_display_id?: string | null;
   before_value: unknown;
   after_value: unknown;
   timestamp: string | null;

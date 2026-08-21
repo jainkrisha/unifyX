@@ -2,7 +2,7 @@ name,pan_like_id,mobile,email,city,dob,source_customer_id,schemes_held,aum
 Aryan Maharaj,RVIFL3321B,0133890838,hemangini94@example.org,Bhatpara,1970-02-09,MF-DEMO-s1,1,1173556
 Chaaya Pathak,,6475255341,nihalshere@example.com,Proddatur,1970-04-19,MF-DEMO-s2,2,2496705
 Aadi Naik,ZTPDP7015K,1718227824,saimuni@example.com,Bahraich,2000-03-20,MF-DEMO-s4,4,300000
-Unni Bhagat,ZGPMM1065I,2624731781,khalsaojas@example.com,Ongole,1970-01-15,MF-DEMO-s5,7,240000
+Unni Bhagat,ZGPMM1065I,2624731781,khalsaojas@example.com,Thanjavur,1970-01-15,MF-DEMO-s5,7,240000
 Daniel Gala,YYDSB6064S,2343098050,daksheshtrivedi@example.org,Coimbatore,1986-10-25,MF-0001,6,448700
 Bhavani Dugar,ZPHAQ7849J,1241182449,yashasvi74@example.org,Bhusawal,1997-02-15,MF-0003,2,212201
 Aarush Nath,JTBJA2427H,2805982620,shivansh31@example.com,Udupi,1993-08-11,MF-0004,4,443630
@@ -72,7 +72,7 @@ Janya Rattan,IKROG4729U,3866322702,vidhi44@example.net,Sikar,1964-12-27,MF-0140,
 Aditya Sani,JXMAJ4930B,3266341638,nitara31@example.org,Ramagundam,1965-06-28,MF-0145,7,2897701
 Upma Golla,HXTPY3460X,3037183764,kulkarnivasana@example.net,Davanagere,1976-06-29,MF-0147,5,2638577
 Idika Sarna,UIQCF3065T,8487392855,ekapadwali@example.org,Sagar,1996-09-08,MF-0149,6,1922112
-Naksh Badami,PGRZD5554O,6084325621,omishakhosla@example.net,Purnia,2003-05-04,MF-0159,2,2245005
+Naksh Badami,PGRZD5554O,6084325621,naksh.badami14@yahoo.co.in,Purnia,2003-05-04,MF-0159,2,2245005
 Balendra Chander,EWBJE4556S,2145868339,sulebhavna@example.com,Rampur,1983-10-02,MF-0166,6,322306
 Abeer Comar,NBLMV5569V,7027278576,anirudh39@example.net,Raichur,1963-07-20,MF-0168,8,2912434
 Xiti Dube,TXUJX3578G,3076810409,chauhandevika@example.org,Bhagalpur,1974-10-02,MF-0170,2,2245517
@@ -139,7 +139,7 @@ Vihaan Chaudhary,YZWOQ2819J,5311060920,vbakshi@example.net,Malda,1988-07-20,MF-0
 Chameli Hari,QDRFJ8364O,9117911244,npathak@example.com,Pallavaram,1995-08-20,MF-0316,3,1147927
 Tarak Patla,IOFUS1305I,4731584776,oscar34@example.com,Ballia,1995-07-14,MF-0318,5,48384
 Charles Lad,EQVSN0104Y,4229712529,vanyasuri@example.com,Karawal Nagar,1970-07-28,MF-0323,7,1601214
-Sneha Varghese,RBKRT3631K,2711307240,alka18@example.org,Chinsurah,1969-12-19,MF-0325,7,1410817
+Sneha Varghese,RBKRT3631K,2711309237,alka18@example.org,Chinsurah,1969-12-19,MF-0325,7,1410817
 Anya Kara,GOUSR9666F,2354940128,onkarmurty@example.net,Rourkela,1968-11-16,MF-0327,8,2870262
 Aarini Sur,WTTVH4570X,1480263257,nparsa@example.net,Jammu,2001-02-21,MF-0329,6,1929803
 Pahal Rastogi,TLKBR1449U,3426834414,keyasarkar@example.org,Hajipur,1980-01-29,MF-0332,3,2334879

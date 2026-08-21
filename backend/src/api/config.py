@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from ..auth.jwt import require_role
-from ..db.models import AuditLog, ConfigCategoryEnum, ConfigEntry, User
+from ..db.models import AuditLog, ConfigCategoryEnum, ConfigEntry, GoldenCustomer, User
 from ..db.session import get_db
 from ..utils import write_audit
 
@@ -81,16 +81,46 @@ def list_audit_log(
     query = db.query(AuditLog)
     if entity_type:
         query = query.filter(AuditLog.entity_type == entity_type)
-    return [
-        {
+    rows = query.order_by(AuditLog.id.desc()).offset(offset).limit(limit).all()
+
+    # Pre-fetch GoldenCustomer details for GoldenCustomer audit entries
+    gc_ids = set()
+    for row in rows:
+        if row.entity_type == "GoldenCustomer" and row.entity_id:
+            try:
+                gc_ids.add(int(row.entity_id))
+            except (ValueError, TypeError):
+                pass
+    gc_map = {}
+    if gc_ids:
+        customers = db.query(GoldenCustomer).filter(GoldenCustomer.id.in_(gc_ids)).all()
+        gc_map = {c.id: c for c in customers}
+
+    results = []
+    for row in rows:
+        entity_name = None
+        entity_display_id = None
+        if row.entity_type == "GoldenCustomer" and row.entity_id:
+            try:
+                gc_id = int(row.entity_id)
+                cust = gc_map.get(gc_id)
+                if cust:
+                    entity_name = cust.primary_name
+                    entity_display_id = f"GC-{gc_id:05d}"
+            except (ValueError, TypeError):
+                pass
+
+        results.append({
             "id": row.id,
             "actor_id": row.actor_id,
             "action": row.action,
             "entity_type": row.entity_type,
             "entity_id": row.entity_id,
+            "entity_name": entity_name,
+            "entity_display_id": entity_display_id,
             "before_value": row.before_value,
             "after_value": row.after_value,
             "timestamp": row.timestamp.isoformat() if row.timestamp else None,
-        }
-        for row in query.order_by(AuditLog.id.desc()).offset(offset).limit(limit).all()
-    ]
+        })
+    return results
+

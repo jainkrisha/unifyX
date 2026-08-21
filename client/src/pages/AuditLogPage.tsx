@@ -127,6 +127,11 @@ export function AuditLogPage() {
                     {isExpanded && hasChanges && (
                       <tr>
                         <td colSpan={7} style={{ background: 'var(--c-surface)', padding: '12px 16px' }}>
+                          {entry.entity_name && entry.entity_display_id && (
+                            <div style={{ fontSize: 12, color: 'var(--c-text)', marginBottom: 10, fontWeight: 500 }}>
+                              Customer: {entry.entity_name} · {entry.entity_display_id}
+                            </div>
+                          )}
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                             <div>
                               <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--c-text-3)', marginBottom: 6, textTransform: 'uppercase' }}>Before</div>

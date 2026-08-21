@@ -156,3 +156,99 @@ def test_review_queue_context_and_field_conflict_resolution():
     assert provenance.value == "new@example.com"
     assert db.query(AuditLog).filter(AuditLog.entity_type == "ReviewQueueItem").count() == 1
     app.dependency_overrides.clear()
+
+
+def test_review_queue_second_candidate_serialization_and_masking():
+    db, client, headers, rms = _context()
+    rm_user = rms[0]
+    
+    # Create customer assigned to the RM to pass scoping checks
+    customer = GoldenCustomer(primary_name="Test Customer", rm_id=rm_user.id)
+    db.add(customer)
+    db.flush()
+    
+    first = SourceRecord(
+        source_system="EQUITY", 
+        source_customer_id="TEST-A", 
+        name="Candidate A",
+        pan_like="ABCDE1234F",
+        mobile="9876543210",
+        email="a@example.com"
+    )
+    second = SourceRecord(
+        source_system="MF", 
+        source_customer_id="TEST-B", 
+        name="Candidate B",
+        pan_like="XYZWR5678Q",
+        mobile="8765432109",
+        email="b@example.com"
+    )
+    db.add_all([first, second])
+    db.flush()
+    
+    item = ReviewQueueItem(
+        golden_customer_id=customer.id,
+        candidate_source_record_id=first.id,
+        candidate_source_record_id_2=second.id,
+        reason="match review",
+        status=ReviewStatusEnum.PENDING,
+    )
+    db.add(item)
+    db.commit()
+    
+    # 1. Admin without unmask parameter (should see masked values)
+    response_admin_masked = client.get("/review-queue", headers=headers)
+    assert response_admin_masked.status_code == 200
+    item_data_admin_masked = next(row for row in response_admin_masked.json() if row["id"] == item.id)
+    assert item_data_admin_masked["candidate_source_record"]["pan_like"] != "ABCDE1234F"
+    assert item_data_admin_masked["candidate_source_record_2"]["pan_like"] != "XYZWR5678Q"
+    
+    # 2. Admin with unmask=true (should see unmasked values)
+    response_admin_unmasked = client.get("/review-queue?unmask=true", headers=headers)
+    assert response_admin_unmasked.status_code == 200
+    item_data_admin_unmasked = next(row for row in response_admin_unmasked.json() if row["id"] == item.id)
+    assert item_data_admin_unmasked["candidate_source_record"]["pan_like"] == "ABCDE1234F"
+    assert item_data_admin_unmasked["candidate_source_record_2"]["pan_like"] == "XYZWR5678Q"
+    assert item_data_admin_unmasked["candidate_source_record"]["mobile"] == "9876543210"
+    item_data_unmasked_2 = item_data_admin_unmasked["candidate_source_record_2"]
+    assert item_data_unmasked_2 is not None
+    assert item_data_unmasked_2["mobile"] == "8765432109"
+    assert item_data_admin_unmasked["candidate_source_record"]["email"] == "a@example.com"
+    assert item_data_unmasked_2["email"] == "b@example.com"
+    
+    # 3. RM with unmask=true (should STILL see masked values because RM has no unmask rights)
+    rm_headers = {"Authorization": f"Bearer {create_access_token({'id': rm_user.id, 'email': rm_user.email, 'role': 'RM'})}"}
+    response_rm = client.get("/review-queue?unmask=true", headers=rm_headers)
+    assert response_rm.status_code == 200
+    item_data_rm = next(row for row in response_rm.json() if row["id"] == item.id)
+    assert item_data_rm["candidate_source_record"]["pan_like"] != "ABCDE1234F"
+    assert item_data_rm["candidate_source_record_2"]["pan_like"] != "XYZWR5678Q"
+    app.dependency_overrides.clear()
+
+
+def test_review_queue_second_candidate_deleted():
+    db, client, headers, _ = _context()
+    first = SourceRecord(source_system="EQUITY", source_customer_id="TEST-A", name="Candidate A")
+    second = SourceRecord(source_system="MF", source_customer_id="TEST-B", name="Candidate B")
+    db.add_all([first, second])
+    db.flush()
+    
+    item = ReviewQueueItem(
+        candidate_source_record_id=first.id,
+        candidate_source_record_id_2=second.id,
+        reason="match review",
+        status=ReviewStatusEnum.PENDING,
+    )
+    db.add(item)
+    db.commit()
+    
+    # Delete the second record from database
+    db.delete(second)
+    db.commit()
+    
+    response = client.get("/review-queue", headers=headers)
+    assert response.status_code == 200
+    item_data = next(row for row in response.json() if row["id"] == item.id)
+    assert item_data["candidate_source_record_id_2"] == second.id
+    assert item_data["candidate_source_record_2"] is None
+    app.dependency_overrides.clear()

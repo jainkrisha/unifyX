@@ -238,8 +238,10 @@ function ReviewItem({
             {item.candidate_source_record_id_2 && (
               <div className="conflict-side">
                 <div className="conflict-label">Candidate B (record #{item.candidate_source_record_id_2})</div>
-                <div className="conflict-value mono" style={{ fontSize: 12, color: 'var(--c-text-3)' }}>
-                  Data from second candidate record
+                <div className="conflict-value mono" style={{ fontSize: 12 }}>
+                  PAN: {item.candidate_source_record_2?.pan_like ?? '—'}<br />
+                  Mobile: {item.candidate_source_record_2?.mobile ?? '—'}<br />
+                  Email: {item.candidate_source_record_2?.email ?? '—'}
                 </div>
               </div>
             )}

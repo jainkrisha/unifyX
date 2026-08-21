@@ -202,3 +202,32 @@ def test_login_rate_limit_returns_429_on_sixth_failed_attempt():
     assert statuses[:5] == [401] * 5
     assert statuses[5] == 429
     app.dependency_overrides.clear()
+
+
+def test_audit_log_golden_customer_fields():
+    db, _, manager, rm1, rm2, admin = _make_context()
+    gc = GoldenCustomer(primary_name="Alice Smith", pan_like="ABCDE1234F")
+    db.add(gc)
+    db.commit()
+    db.refresh(gc)
+
+    audit_entry = AuditLog(
+        actor_id=admin.id,
+        action="admin_confirm_customer",
+        entity_type="GoldenCustomer",
+        entity_id=str(gc.id),
+        before_value={"name": "Alice"},
+        after_value={"name": "Alice Smith"},
+    )
+    db.add(audit_entry)
+    db.commit()
+
+    client, headers = _client_and_tokens(db, manager, rm1, rm2, admin)
+    res = client.get("/audit-log?entity_type=GoldenCustomer", headers=headers["admin"])
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data) == 1
+    assert data[0]["entity_name"] == "Alice Smith"
+    assert data[0]["entity_display_id"] == f"GC-{gc.id:05d}"
+    app.dependency_overrides.clear()
+
